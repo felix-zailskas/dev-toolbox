@@ -1,7 +1,45 @@
-# Tauri + React + Typescript
+# DevToolbox
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A native macOS developer utility app built with Tauri v2, React, TypeScript, and Tailwind CSS.
 
-## Recommended IDE Setup
+## Tools
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- **Text Diff** — Compare two texts with word-level highlighting
+- **JWT Decoder** — Decode and verify JWT tokens
+- **Data Generator** — Generate fake data with faker.js
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18+)
+- [Rust](https://www.rust-lang.org/tools/install) (`rustup` recommended)
+- Tauri v2 system dependencies: https://tauri.app/start/prerequisites/
+
+## Setup
+
+```bash
+npm install
+```
+
+## Development
+
+```bash
+npm run tauri dev
+```
+
+Opens a native macOS window with hot-reload.
+
+## Build
+
+```bash
+npm run tauri build
+```
+
+Produces a `.app` bundle and `.dmg` installer in `src-tauri/target/release/bundle/`.
+
+## Frontend only (browser)
+
+```bash
+npm run dev
+```
+
+Runs the Vite dev server at `http://localhost:1420` without the Tauri native shell.
