@@ -1,4 +1,5 @@
 import { Faker, en, en_GB, de, nl, fr } from "@faker-js/faker";
+import { generateAddress } from "./addresses";
 
 export const LOCALES = {
   en_US: { label: "English (US)", locale: en },
@@ -10,7 +11,7 @@ export const LOCALES = {
 
 export type LocaleKey = keyof typeof LOCALES;
 
-export const FIELDS = ["uuid", "firstName", "lastName", "email", "iban"] as const;
+export const FIELDS = ["uuid", "firstName", "lastName", "email", "street", "city", "zip", "country", "iban"] as const;
 export type FieldKey = (typeof FIELDS)[number];
 
 export const FIELD_LABELS: Record<FieldKey, string> = {
@@ -18,6 +19,10 @@ export const FIELD_LABELS: Record<FieldKey, string> = {
   firstName: "First Name",
   lastName: "Last Name",
   email: "Email",
+  street: "Street",
+  city: "City",
+  zip: "Zip Code",
+  country: "Country",
   iban: "IBAN",
 };
 
@@ -204,6 +209,20 @@ export function generateRecord(
       case "email":
         record.email = faker.internet.email();
         break;
+      case "street":
+      case "city":
+      case "zip":
+      case "country": {
+        // Generate address once, fill all requested address fields
+        if (!record.street && !record.city && !record.zip && !record.country) {
+          const addr = generateAddress(locale);
+          if (fields.includes("street")) record.street = addr.street;
+          if (fields.includes("city")) record.city = addr.city;
+          if (fields.includes("zip")) record.zip = addr.zip;
+          if (fields.includes("country")) record.country = addr.country;
+        }
+        break;
+      }
       case "iban":
         record.iban = generateIban(locale);
         break;
