@@ -5,6 +5,21 @@
   "windows": ["main"],
   "permissions": [
     "core:default",
-    "opener:default"
+    "opener:default",
+    "dialog:default",
+    "dialog:allow-open",
+    "fs:default",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:allow-exists",
+    "fs:allow-mkdir",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        "$HOME/.config",
+        "$HOME/.config/dev-toolbox",
+        "$HOME/.config/dev-toolbox/**"
+      ]
+    }
   ]
 }

@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import DiffEditor from "@/components/diff/DiffEditor";
 import DiffViewer from "@/components/diff/DiffViewer";
 import { computeLineDiff, type LineDiff } from "@/lib/diff";
+import { useSessionState } from "@/hooks/useSessionState";
 
 export default function TextDiff() {
-  const [sourceA, setSourceA] = useState("");
-  const [sourceB, setSourceB] = useState("");
+  const [sourceA, setSourceA] = useSessionState("diff:sourceA", "");
+  const [sourceB, setSourceB] = useSessionState("diff:sourceB", "");
   const [diffs, setDiffs] = useState<LineDiff[]>([]);
 
   const handleCompare = () => {

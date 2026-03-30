@@ -15,7 +15,7 @@ export default function DiffEditor({ label, value, onChange }: DiffEditorProps) 
   const handleCopy = () => navigator.clipboard.writeText(value);
 
   return (
-    <div className="flex flex-col gap-2 flex-1">
+    <div className="flex flex-col gap-2 flex-1 min-w-0">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-foreground">{label}</span>
         <div className="flex items-center gap-3">

@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import TextDiff from "./pages/TextDiff";
 import JwtDecoder from "./pages/JwtDecoder";
 import DataGenerator from "./pages/DataGenerator";
+import Settings from "./pages/Settings";
 import { ROUTES } from "./routes";
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
           <Route path={ROUTES.diff} element={<TextDiff />} />
           <Route path={ROUTES.jwt} element={<JwtDecoder />} />
           <Route path={ROUTES.generator} element={<DataGenerator />} />
+          <Route path={ROUTES.settings} element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>
