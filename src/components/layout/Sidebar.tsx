@@ -1,11 +1,12 @@
 import { NavLink } from "react-router";
 import { LayoutDashboard, FileDiff, KeyRound, Database } from "lucide-react";
+import { ROUTES } from "@/routes";
 
 const links = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/diff", label: "Text Diff", icon: FileDiff },
-  { to: "/jwt", label: "JWT Decoder", icon: KeyRound },
-  { to: "/generator", label: "Data Generator", icon: Database },
+  { to: ROUTES.dashboard, label: "Dashboard", icon: LayoutDashboard },
+  { to: ROUTES.diff, label: "Text Diff", icon: FileDiff },
+  { to: ROUTES.jwt, label: "JWT Decoder", icon: KeyRound },
+  { to: ROUTES.generator, label: "Data Generator", icon: Database },
 ];
 
 export default function Sidebar() {
