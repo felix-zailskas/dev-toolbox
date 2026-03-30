@@ -6,8 +6,11 @@ import JwtDecoder from "./pages/JwtDecoder";
 import DataGenerator from "./pages/DataGenerator";
 import Settings from "./pages/Settings";
 import { ROUTES } from "./routes";
+import { useTheme } from "./hooks/useSystemTheme";
 
 export default function App() {
+  useTheme();
+
   return (
     <BrowserRouter>
       <Routes>

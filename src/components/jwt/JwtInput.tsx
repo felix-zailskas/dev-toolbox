@@ -8,10 +8,10 @@ interface JwtInputProps {
   onClear: () => void;
 }
 
-const PART_COLORS = [
-  "#f92672",  // header — pink
-  "#AE81FF",  // payload — purple
-  "#66D9EF",  // signature — blue
+const PART_CSS_VARS = [
+  "var(--syntax-highlight-1)",  // header
+  "var(--syntax-highlight-2)",  // payload
+  "var(--syntax-highlight-3)",  // signature
 ];
 
 function colorize(text: string): string {
@@ -19,10 +19,10 @@ function colorize(text: string): string {
   const parts = text.split(".");
   return parts
     .map((part, i) => {
-      const color = PART_COLORS[i] ?? "inherit";
+      const color = PART_CSS_VARS[i] ?? "inherit";
       return `<span style="color:${color}">${escapeHtml(part)}</span>`;
     })
-    .join('<span style="color:#75715E">.</span>');
+    .join('<span style="color:var(--syntax-comment)">.</span>');
 }
 
 function escapeHtml(str: string): string {

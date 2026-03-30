@@ -9,17 +9,11 @@ function syntaxHighlight(json: string): string {
     (match) => {
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
-          return `<span class="text-[#f92672]">${match}</span>`; // key — pink
+          return `<span style="color:var(--syntax-key)">${match}</span>`;
         }
-        return `<span class="text-[#E6DB74]">${match}</span>`; // string — yellow
+        return `<span style="color:var(--syntax-string)">${match}</span>`;
       }
-      if (/true|false/.test(match)) {
-        return `<span class="text-[#AE81FF]">${match}</span>`; // boolean — purple
-      }
-      if (/null/.test(match)) {
-        return `<span class="text-[#AE81FF]">${match}</span>`; // null — purple
-      }
-      return `<span class="text-[#AE81FF]">${match}</span>`; // number — purple
+      return `<span style="color:var(--syntax-number)">${match}</span>`;
     }
   );
 }

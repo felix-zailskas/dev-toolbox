@@ -1,8 +1,11 @@
 import { readTextFile, writeTextFile, exists, mkdir } from "@tauri-apps/plugin-fs";
 import { homeDir } from "@tauri-apps/api/path";
 
+export type ThemeMode = "light" | "dark" | "system";
+
 export interface AppConfig {
   defaultJwtKeyPath?: string;
+  theme?: ThemeMode;
 }
 
 const CONFIG_DIR = ".config/dev-toolbox";

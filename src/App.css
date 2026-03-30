@@ -46,7 +46,59 @@
     --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Solarized Light */
 :root {
+    --syntax-key: #d33682;
+    --syntax-string: #b58900;
+    --syntax-number: #6c71c4;
+    --syntax-comment: #93a1a1;
+    --syntax-highlight-1: #d33682;
+    --syntax-highlight-2: #6c71c4;
+    --syntax-highlight-3: #268bd2;
+    --background: #FDF6E3;
+    --foreground: #657B83;
+    --card: #EEE8D5;
+    --card-foreground: #657B83;
+    --popover: #EEE8D5;
+    --popover-foreground: #657B83;
+    --primary: #859900;
+    --primary-foreground: #FDF6E3;
+    --secondary: #6c71c4;
+    --secondary-foreground: #FDF6E3;
+    --muted: #EEE8D5;
+    --muted-foreground: #93a1a1;
+    --accent: #268bd2;
+    --accent-foreground: #FDF6E3;
+    --destructive: #dc322f;
+    --destructive-foreground: #FDF6E3;
+    --border: #93a1a1;
+    --input: #93a1a1;
+    --ring: #268bd2;
+    --radius: 0.5rem;
+    --chart-1: #859900;
+    --chart-2: #268bd2;
+    --chart-3: #6c71c4;
+    --chart-4: #b58900;
+    --chart-5: #dc322f;
+    --sidebar: #EEE8D5;
+    --sidebar-foreground: #657B83;
+    --sidebar-primary: #859900;
+    --sidebar-primary-foreground: #FDF6E3;
+    --sidebar-accent: #FDF6E3;
+    --sidebar-accent-foreground: #657B83;
+    --sidebar-border: #93a1a1;
+    --sidebar-ring: #268bd2;
+}
+
+/* Monokai Dark */
+.dark {
+    --syntax-key: #f92672;
+    --syntax-string: #E6DB74;
+    --syntax-number: #AE81FF;
+    --syntax-comment: #75715E;
+    --syntax-highlight-1: #f92672;
+    --syntax-highlight-2: #AE81FF;
+    --syntax-highlight-3: #66D9EF;
     --background: #272822;
     --foreground: #f8f8f2;
     --card: #2d2e27;
@@ -66,7 +118,6 @@
     --border: #3e3f37;
     --input: #3e3f37;
     --ring: #A6E22E;
-    --radius: 0.5rem;
     --chart-1: #A6E22E;
     --chart-2: #66D9EF;
     --chart-3: #AE81FF;

@@ -1,17 +1,38 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { FolderOpen, Check } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { loadConfig, saveConfig, type AppConfig } from "@/lib/config";
+import { loadConfig, saveConfig, type AppConfig, type ThemeMode } from "@/lib/config";
+import { useTheme } from "@/hooks/useSystemTheme";
 
 export default function Settings() {
   const [config, setConfig] = useState<AppConfig>({});
   const [saved, setSaved] = useState(false);
+  const { mode, setMode } = useTheme();
 
   useEffect(() => {
-    loadConfig().then(setConfig);
-  }, []);
+    loadConfig().then((cfg) => {
+      setConfig(cfg);
+      // Sync persisted theme to local state if it differs
+      if (cfg.theme && cfg.theme !== mode) {
+        setMode(cfg.theme);
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleThemeChange = (value: ThemeMode) => {
+    setMode(value);
+    setConfig((prev) => ({ ...prev, theme: value }));
+    setSaved(false);
+  };
 
   const handleSelectKeyFile = async () => {
     const selected = await open({
@@ -41,6 +62,23 @@ export default function Settings() {
   return (
     <div className="p-6 flex flex-col gap-6 max-w-2xl">
       <h1 className="text-2xl font-bold">Settings</h1>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-foreground">Theme</span>
+        <span className="text-xs text-muted-foreground">
+          Choose between light, dark, or follow your system preference.
+        </span>
+        <Select value={mode} onValueChange={(v) => handleThemeChange(v as ThemeMode)}>
+          <SelectTrigger className="w-[200px] bg-card border-border">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="light">Light</SelectItem>
+            <SelectItem value="dark">Dark</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="flex flex-col gap-2">
         <span className="text-sm font-medium text-foreground">Default JWT Signing Key File</span>
