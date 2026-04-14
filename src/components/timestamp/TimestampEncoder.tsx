@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Copy, RotateCcw } from "lucide-react";
@@ -17,17 +17,18 @@ const FIELD_LABELS: Record<keyof DateFields, string> = {
   millisecond: "Ms",
 };
 
+type RawFields = Record<keyof DateFields, string>;
+
+function fieldsToRaw(fields: DateFields): RawFields {
+  return Object.fromEntries(
+    FIELD_ORDER.map((key) => [key, String(fields[key])]),
+  ) as RawFields;
+}
+
 export default function TimestampEncoder() {
   const [fields, setFields] = useSessionState<DateFields>("timestamp:encoder:fields", nowFields());
-
-  const errors = useMemo(() => {
-    const errs: Partial<Record<keyof DateFields, string>> = {};
-    for (const key of FIELD_ORDER) {
-      const err = validateField(key, fields[key], fields);
-      if (err) errs[key] = err;
-    }
-    return errs;
-  }, [fields]);
+  const [rawFields, setRawFields] = useState<RawFields>(() => fieldsToRaw(fields));
+  const [errors, setErrors] = useState<Partial<Record<keyof DateFields, string>>>({});
 
   const hasErrors = Object.keys(errors).length > 0;
 
@@ -37,12 +38,37 @@ export default function TimestampEncoder() {
   }, [fields, hasErrors]);
 
   const handleFieldChange = (key: keyof DateFields, raw: string) => {
-    const value = raw === "" ? 0 : parseInt(raw, 10);
-    if (isNaN(value)) return;
-    setFields((prev) => ({ ...prev, [key]: value }));
+    // Allow empty or digits only (no leading zeros except for a single "0")
+    if (raw !== "" && !/^\d+$/.test(raw)) return;
+    setRawFields((prev) => ({ ...prev, [key]: raw }));
   };
 
-  const handleNow = () => setFields(nowFields());
+  const handleFieldBlur = (key: keyof DateFields) => {
+    const raw = rawFields[key];
+    const value = raw === "" ? 0 : parseInt(raw, 10);
+    if (isNaN(value)) return;
+    // Normalize display (strip leading zeros)
+    setRawFields((prev) => ({ ...prev, [key]: String(value) }));
+    setFields((prev) => {
+      const next = { ...prev, [key]: value };
+      // Validate on blur
+      const err = validateField(key, value, next);
+      setErrors((prevErr) => {
+        const updated = { ...prevErr };
+        if (err) updated[key] = err;
+        else delete updated[key];
+        return updated;
+      });
+      return next;
+    });
+  };
+
+  const handleNow = () => {
+    const now = nowFields();
+    setFields(now);
+    setRawFields(fieldsToRaw(now));
+    setErrors({});
+  };
 
   const handleCopy = (value: string) => navigator.clipboard.writeText(value);
 
@@ -62,9 +88,11 @@ export default function TimestampEncoder() {
             <div key={key} className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground">{FIELD_LABELS[key]}</label>
               <Input
-                type="number"
-                value={fields[key]}
+                type="text"
+                inputMode="numeric"
+                value={rawFields[key]}
                 onChange={(e) => handleFieldChange(key, e.target.value)}
+                onBlur={() => handleFieldBlur(key)}
                 className={`w-20 font-mono text-sm bg-card border-border ${key === "year" ? "w-24" : ""} ${errors[key] ? "border-destructive" : ""}`}
               />
               {errors[key] && (
