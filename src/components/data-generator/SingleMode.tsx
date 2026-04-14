@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import CopyButton from "@/components/ui/copy-button";
 import {
   generateRecord,
   FIELDS,
@@ -25,8 +25,6 @@ export default function SingleMode({ locale }: SingleModeProps) {
     setValues((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleCopy = (value: string) => navigator.clipboard.writeText(value);
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
@@ -43,14 +41,7 @@ export default function SingleMode({ locale }: SingleModeProps) {
               onChange={(e) => handleChange(field, e.target.value)}
               className="font-mono text-sm bg-card border-border flex-1"
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleCopy(values[field])}
-              className="h-8 w-8 shrink-0"
-            >
-              <Copy className="h-3 w-3" />
-            </Button>
+            <CopyButton value={values[field]} size="icon" className="h-8 w-8" />
           </div>
         ))}
       </div>

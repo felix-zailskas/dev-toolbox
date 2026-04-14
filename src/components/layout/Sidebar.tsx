@@ -6,7 +6,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
     isActive
       ? "bg-muted text-foreground"
-      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+      : "text-muted-foreground [@media(hover:hover)]:hover:bg-muted/50 [@media(hover:hover)]:hover:text-foreground"
   }`;
 
 export default function Sidebar() {
