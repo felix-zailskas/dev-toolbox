@@ -1,4 +1,5 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import TimestampDecoder from "@/components/timestamp/TimestampDecoder";
 
 export default function UnixTimestamp() {
   return (
@@ -13,7 +14,7 @@ export default function UnixTimestamp() {
           <TabsTrigger value="encoder">Encoder</TabsTrigger>
         </TabsList>
         <TabsContent value="decoder" className="mt-4">
-          <div className="text-muted-foreground">Decoder coming soon...</div>
+          <TimestampDecoder />
         </TabsContent>
         <TabsContent value="encoder" className="mt-4">
           <div className="text-muted-foreground">Encoder coming soon...</div>

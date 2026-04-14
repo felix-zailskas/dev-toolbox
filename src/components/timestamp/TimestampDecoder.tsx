@@ -1,0 +1,68 @@
+import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Copy } from "lucide-react";
+import { decodeTimestamp, isMilliseconds } from "@/lib/timestamp";
+import { useSessionState } from "@/hooks/useSessionState";
+
+function OutputRow({ label, value }: { label: string; value: string }) {
+  const handleCopy = () => navigator.clipboard.writeText(value);
+
+  return (
+    <div className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-b-0">
+      <span className="text-sm text-muted-foreground w-28 shrink-0">{label}</span>
+      <span className="text-sm font-mono text-foreground flex-1 break-all">{value}</span>
+      <Button variant="ghost" size="icon-xs" onClick={handleCopy} className="shrink-0">
+        <Copy className="h-3 w-3" />
+      </Button>
+    </div>
+  );
+}
+
+export default function TimestampDecoder() {
+  const [input, setInput] = useSessionState("timestamp:decoder:input", "");
+
+  const result = useMemo(() => {
+    if (!input.trim()) return null;
+    return decodeTimestamp(input);
+  }, [input]);
+
+  const isError = result !== null && "error" in result;
+  const isValid = result !== null && !isError;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-foreground">Unix Timestamp</span>
+        <Input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="e.g. 1713100200 or 1713100200000"
+          className="font-mono text-sm bg-card border-border"
+        />
+        {input.trim() && !isError && (
+          <span className="text-xs text-muted-foreground">
+            Detected: {isMilliseconds(input.trim()) ? "milliseconds" : "seconds"}
+          </span>
+        )}
+      </div>
+
+      {isError && (
+        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3">
+          {result.error}
+        </div>
+      )}
+
+      {isValid && (
+        <div className="bg-card border border-border rounded-md p-4">
+          <OutputRow label="ISO 8601" value={result.iso8601} />
+          <OutputRow label="RFC 2822" value={result.rfc2822} />
+          <OutputRow label="Relative" value={result.relative} />
+          <OutputRow label="Local Time" value={result.local} />
+          <OutputRow label="UTC" value={result.utc} />
+        </div>
+      )}
+    </div>
+  );
+}
