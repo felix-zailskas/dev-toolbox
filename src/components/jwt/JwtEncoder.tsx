@@ -9,7 +9,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Copy, FolderOpen } from "lucide-react";
+import { FolderOpen } from "lucide-react";
+import CopyButton from "@/components/ui/copy-button";
 import { open } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import { encodeJwt, SUPPORTED_ALGORITHMS, type HmacAlgorithm } from "@/lib/jwt";
@@ -97,8 +98,6 @@ export default function JwtEncoder() {
     }
   };
 
-  const handleCopy = () => navigator.clipboard.writeText(output);
-
   return (
     <div className="flex flex-col gap-4">
       {/* Algorithm selector */}
@@ -167,11 +166,7 @@ export default function JwtEncoder() {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">Generated Token</span>
-          {output && (
-            <Button variant="ghost" size="icon" onClick={handleCopy} className="h-6 w-6">
-              <Copy className="h-3 w-3" />
-            </Button>
-          )}
+          {output && <CopyButton value={output} size="icon" className="h-6 w-6" />}
         </div>
         <pre className="bg-card border border-border rounded-md p-4 font-mono text-sm overflow-auto min-h-[60px] break-all whitespace-pre-wrap">
           {output || <span className="text-muted-foreground">Token will appear here...</span>}

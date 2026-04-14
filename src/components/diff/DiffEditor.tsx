@@ -1,6 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import CopyButton from "@/components/ui/copy-button";
 
 interface DiffEditorProps {
   label: string;
@@ -12,8 +11,6 @@ export default function DiffEditor({ label, value, onChange }: DiffEditorProps) 
   const charCount = value.length;
   const wordCount = value.trim() === "" ? 0 : value.trim().split(/\s+/).length;
 
-  const handleCopy = () => navigator.clipboard.writeText(value);
-
   return (
     <div className="flex flex-col gap-2 flex-1 min-w-0">
       <div className="flex items-center justify-between">
@@ -22,9 +19,7 @@ export default function DiffEditor({ label, value, onChange }: DiffEditorProps) 
           <span className="text-xs text-muted-foreground">
             {wordCount} words · {charCount} chars
           </span>
-          <Button variant="ghost" size="icon" onClick={handleCopy} className="h-6 w-6">
-            <Copy className="h-3 w-3" />
-          </Button>
+          <CopyButton value={value} size="icon" className="h-6 w-6" />
         </div>
       </div>
       <Textarea

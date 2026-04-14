@@ -103,12 +103,13 @@ export default function Settings() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button onClick={handleSave}>Save Settings</Button>
-        {saved && (
-          <span className="text-sm text-primary flex items-center gap-1">
-            <Check className="h-4 w-4" /> Saved
-          </span>
-        )}
+        <Button onClick={handleSave}>
+          {saved ? (
+            <><Check className="h-4 w-4 mr-1" /> Saved</>
+          ) : (
+            "Save Settings"
+          )}
+        </Button>
       </div>
 
       {error && (

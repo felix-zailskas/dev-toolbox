@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Copy, RotateCcw } from "lucide-react";
+import CopyButton from "@/components/ui/copy-button";
+import { Clock } from "lucide-react";
 import { encodeTimestamp, validateField, nowFields, type DateFields } from "@/lib/timestamp";
 import { useSessionState } from "@/hooks/useSessionState";
 
@@ -70,8 +71,6 @@ export default function TimestampEncoder() {
     setErrors({});
   };
 
-  const handleCopy = (value: string) => navigator.clipboard.writeText(value);
-
   return (
     <div className="flex flex-col gap-4">
       {/* Date/time field inputs */}
@@ -79,7 +78,7 @@ export default function TimestampEncoder() {
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">Date & Time (Local)</span>
           <Button variant="secondary" size="sm" onClick={handleNow}>
-            <RotateCcw className="h-3 w-3 mr-1" />
+            <Clock className="h-3 w-3 mr-1" />
             Now
           </Button>
         </div>
@@ -93,7 +92,7 @@ export default function TimestampEncoder() {
                 value={rawFields[key]}
                 onChange={(e) => handleFieldChange(key, e.target.value)}
                 onBlur={() => handleFieldBlur(key)}
-                className={`w-20 font-mono text-sm bg-card border-border ${key === "year" ? "w-24" : ""} ${errors[key] ? "border-destructive" : ""}`}
+                className={`font-mono text-sm bg-card border-border ${key === "year" ? "w-24" : key === "millisecond" ? "w-16" : "w-20"} ${errors[key] ? "border-destructive" : ""}`}
               />
               {errors[key] && (
                 <span className="text-xs text-destructive">{errors[key]}</span>
@@ -109,23 +108,17 @@ export default function TimestampEncoder() {
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground w-32">Seconds</span>
             <span className="text-sm font-mono text-foreground flex-1">{result.seconds}</span>
-            <Button variant="ghost" size="icon-xs" onClick={() => handleCopy(String(result.seconds))}>
-              <Copy className="h-3 w-3" />
-            </Button>
+            <CopyButton value={String(result.seconds)} />
           </div>
           <div className="flex items-center justify-between border-t border-border pt-3">
             <span className="text-sm text-muted-foreground w-32">Milliseconds</span>
             <span className="text-sm font-mono text-foreground flex-1">{result.milliseconds}</span>
-            <Button variant="ghost" size="icon-xs" onClick={() => handleCopy(String(result.milliseconds))}>
-              <Copy className="h-3 w-3" />
-            </Button>
+            <CopyButton value={String(result.milliseconds)} />
           </div>
           <div className="flex items-center justify-between border-t border-border pt-3">
             <span className="text-sm text-muted-foreground w-32">UTC</span>
             <span className="text-sm font-mono text-foreground flex-1">{result.utc}</span>
-            <Button variant="ghost" size="icon-xs" onClick={() => handleCopy(result.utc)}>
-              <Copy className="h-3 w-3" />
-            </Button>
+            <CopyButton value={result.utc} />
           </div>
         </div>
       )}

@@ -1,20 +1,15 @@
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Copy } from "lucide-react";
+import CopyButton from "@/components/ui/copy-button";
 import { decodeTimestamp, isMilliseconds } from "@/lib/timestamp";
 import { useSessionState } from "@/hooks/useSessionState";
 
 function OutputRow({ label, value }: { label: string; value: string }) {
-  const handleCopy = () => navigator.clipboard.writeText(value);
-
   return (
     <div className="flex items-center justify-between gap-4 py-2 border-b border-border last:border-b-0">
       <span className="text-sm text-muted-foreground w-28 shrink-0">{label}</span>
       <span className="text-sm font-mono text-foreground flex-1 break-all">{value}</span>
-      <Button variant="ghost" size="icon-xs" onClick={handleCopy} className="shrink-0">
-        <Copy className="h-3 w-3" />
-      </Button>
+      <CopyButton value={value} />
     </div>
   );
 }
@@ -52,6 +47,10 @@ export default function TimestampDecoder() {
         <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3">
           {result.error}
         </div>
+      )}
+
+      {!input.trim() && (
+        <p className="text-sm text-muted-foreground">Enter a timestamp above to decode.</p>
       )}
 
       {isValid && (

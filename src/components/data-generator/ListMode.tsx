@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Copy, Download } from "lucide-react";
+import { Copy, Check, Download } from "lucide-react";
 import {
   generateRecords,
   FIELDS,
@@ -30,6 +30,8 @@ export default function ListMode({ locale }: ListModeProps) {
   const [count, setCount] = useState(10);
   const [records, setRecords] = useState<Record<FieldKey, string>[]>([]);
   const [page, setPage] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const toggleField = (field: FieldKey) => {
     if (field === "uuid") return;
@@ -50,6 +52,9 @@ export default function ListMode({ locale }: ListModeProps) {
 
   const handleCopyAll = () => {
     navigator.clipboard.writeText(JSON.stringify(records, null, 2));
+    setCopied(true);
+    clearTimeout(copyTimeoutRef.current);
+    copyTimeoutRef.current = setTimeout(() => setCopied(false), 1500);
   };
 
   const handleExportJson = () => {
@@ -103,7 +108,8 @@ export default function ListMode({ locale }: ListModeProps) {
           {/* Export buttons */}
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleCopyAll}>
-              <Copy className="h-3 w-3 mr-1" /> Copy JSON
+              {copied ? <Check className="h-3 w-3 mr-1 text-primary" /> : <Copy className="h-3 w-3 mr-1" />}
+              {copied ? "Copied" : "Copy JSON"}
             </Button>
             <Button variant="outline" size="sm" onClick={handleExportJson}>
               <Download className="h-3 w-3 mr-1" /> Export JSON
