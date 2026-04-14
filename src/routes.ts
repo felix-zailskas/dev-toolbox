@@ -1,10 +1,11 @@
-import { FileDiff, KeyRound, Database, type LucideIcon } from "lucide-react";
+import { FileDiff, KeyRound, Database, Clock, type LucideIcon } from "lucide-react";
 
 export const ROUTES = {
   dashboard: "/dashboard",
   diff: "/diff",
   jwt: "/jwt",
   generator: "/generator",
+  timestamp: "/timestamp",
   settings: "/settings",
 } as const;
 
@@ -33,5 +34,11 @@ export const TOOLS: ToolDef[] = [
     title: "Data Generator",
     description: "Generate fake data records for development and testing.",
     icon: Database,
+  },
+  {
+    to: ROUTES.timestamp,
+    title: "Unix Timestamp",
+    description: "Convert between unix timestamps and human-readable dates.",
+    icon: Clock,
   },
 ];
