@@ -55,13 +55,26 @@ export default function TimestampDecoder() {
       )}
 
       {isValid && (
-        <div className="bg-card border border-border rounded-md p-4">
-          <OutputRow label="ISO 8601" value={result.iso8601} />
-          <OutputRow label="RFC 2822" value={result.rfc2822} />
-          <OutputRow label="Relative" value={result.relative} />
-          <OutputRow label="Local Time" value={result.local} />
-          <OutputRow label="UTC" value={result.utc} />
-        </div>
+        <>
+          <div className="bg-card border border-border rounded-md p-4">
+            <OutputRow label="ISO 8601" value={result.iso8601} />
+            <OutputRow label="RFC 2822" value={result.rfc2822} />
+            <OutputRow label="Relative" value={result.relative} />
+            <OutputRow label="Local Time" value={result.local} />
+            <OutputRow label="UTC" value={result.utc} />
+          </div>
+          <div className="bg-card border border-border rounded-md p-4">
+            <span className="text-sm font-medium text-foreground">Local Fields</span>
+            <div className="flex gap-4 flex-wrap mt-2">
+              {(["year", "month", "day", "hour", "minute", "second", "millisecond"] as const).map((key) => (
+                <div key={key} className="flex flex-col gap-0.5">
+                  <span className="text-xs text-muted-foreground capitalize">{key === "millisecond" ? "Ms" : key}</span>
+                  <span className="text-sm font-mono text-foreground">{result.fields[key]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

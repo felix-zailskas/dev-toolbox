@@ -14,6 +14,7 @@ export interface DecodedTimestamp {
   relative: string;
   local: string;
   utc: string;
+  fields: DateFields;
 }
 
 /**
@@ -112,6 +113,7 @@ export function decodeTimestamp(input: string): DecodedTimestamp | { error: stri
     relative: formatRelative(date),
     local: formatLocal(date),
     utc: formatUTC(date),
+    fields: dateToFields(date),
   };
 }
 
@@ -121,17 +123,20 @@ export function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-export function nowFields(): DateFields {
-  const now = new Date();
+export function dateToFields(date: Date): DateFields {
   return {
-    year: now.getFullYear(),
-    month: now.getMonth() + 1,
-    day: now.getDate(),
-    hour: now.getHours(),
-    minute: now.getMinutes(),
-    second: now.getSeconds(),
-    millisecond: now.getMilliseconds(),
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds(),
+    millisecond: date.getMilliseconds(),
   };
+}
+
+export function nowFields(): DateFields {
+  return dateToFields(new Date());
 }
 
 export function encodeTimestamp(fields: DateFields): { seconds: number; milliseconds: number; utc: string } {
