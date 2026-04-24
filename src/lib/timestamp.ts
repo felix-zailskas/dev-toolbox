@@ -157,6 +157,64 @@ export function encodeTimestamp(fields: DateFields): { seconds: number; millisec
   };
 }
 
+const pad = (n: number, w = 2): string => String(n).padStart(w, "0");
+
+export function formatDateTimeString(fields: DateFields): string {
+  return `${pad(fields.year, 4)}-${pad(fields.month)}-${pad(fields.day)}T${pad(fields.hour)}:${pad(fields.minute)}:${pad(fields.second)}.${pad(fields.millisecond, 3)}`;
+}
+
+function validateDateFields(fields: DateFields): boolean {
+  return (
+    validateField("year", fields.year, fields) === null &&
+    validateField("month", fields.month, fields) === null &&
+    validateField("day", fields.day, fields) === null &&
+    validateField("hour", fields.hour, fields) === null &&
+    validateField("minute", fields.minute, fields) === null &&
+    validateField("second", fields.second, fields) === null &&
+    validateField("millisecond", fields.millisecond, fields) === null
+  );
+}
+
+/**
+ * Parse a datetime string into local DateFields.
+ *
+ * Recognised as local time (no timezone conversion):
+ *   YYYY-MM-DD
+ *   YYYY-MM-DD{T| |-}HH:mm[:ss[.SSS]]
+ *
+ * Strings that don't match are passed to Date.parse as a fallback, which
+ * handles ISO 8601 with a timezone (Z/±HH:MM) and RFC 2822. Those are
+ * converted to the user's local fields.
+ */
+export function parseDateTimeString(input: string): DateFields | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  const localMatch = trimmed.match(
+    /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T \-](\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.(\d{1,3}))?)?)?$/,
+  );
+  if (localMatch) {
+    const [, y, mo, d, h, mi, s, ms] = localMatch;
+    const fields: DateFields = {
+      year: parseInt(y, 10),
+      month: parseInt(mo, 10),
+      day: parseInt(d, 10),
+      hour: h ? parseInt(h, 10) : 0,
+      minute: mi ? parseInt(mi, 10) : 0,
+      second: s ? parseInt(s, 10) : 0,
+      millisecond: ms ? parseInt(ms.padEnd(3, "0"), 10) : 0,
+    };
+    return validateDateFields(fields) ? fields : null;
+  }
+
+  const parsed = Date.parse(trimmed);
+  if (!isNaN(parsed)) {
+    return dateToFields(new Date(parsed));
+  }
+
+  return null;
+}
+
 export function validateField(field: keyof DateFields, value: number, fields: DateFields): string | null {
   switch (field) {
     case "year":

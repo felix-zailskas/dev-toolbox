@@ -3,7 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CopyButton from "@/components/ui/copy-button";
 import { Clock } from "lucide-react";
-import { encodeTimestamp, validateField, nowFields, type DateFields } from "@/lib/timestamp";
+import {
+  encodeTimestamp,
+  formatDateTimeString,
+  nowFields,
+  parseDateTimeString,
+  validateField,
+  type DateFields,
+} from "@/lib/timestamp";
 import { useSessionState } from "@/hooks/useSessionState";
 
 const FIELD_ORDER: (keyof DateFields)[] = ["year", "month", "day", "hour", "minute", "second", "millisecond"];
@@ -29,6 +36,8 @@ function fieldsToRaw(fields: DateFields): RawFields {
 export default function TimestampEncoder() {
   const [fields, setFields] = useSessionState<DateFields>("timestamp:encoder:fields", nowFields());
   const [rawFields, setRawFields] = useState<RawFields>(() => fieldsToRaw(fields));
+  const [rawString, setRawString] = useState<string>(() => formatDateTimeString(fields));
+  const [stringError, setStringError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof DateFields, string>>>({});
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -60,15 +69,38 @@ export default function TimestampEncoder() {
         else delete updated[key];
         return updated;
       });
+      if (!err) {
+        setRawString(formatDateTimeString(next));
+        setStringError(null);
+      }
       return next;
     });
+  };
+
+  const handleStringChange = (value: string) => {
+    setRawString(value);
+    if (!value.trim()) {
+      setStringError(null);
+      return;
+    }
+    const parsed = parseDateTimeString(value);
+    if (!parsed) {
+      setStringError("Unrecognized format");
+      return;
+    }
+    setStringError(null);
+    setFields(parsed);
+    setRawFields(fieldsToRaw(parsed));
+    setErrors({});
   };
 
   const handleNow = () => {
     const now = nowFields();
     setFields(now);
     setRawFields(fieldsToRaw(now));
+    setRawString(formatDateTimeString(now));
     setErrors({});
+    setStringError(null);
   };
 
   return (
@@ -81,6 +113,19 @@ export default function TimestampEncoder() {
             <Clock className="h-3 w-3 mr-1" />
             Now
           </Button>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-muted-foreground">Date string</label>
+          <Input
+            type="text"
+            value={rawString}
+            onChange={(e) => handleStringChange(e.target.value)}
+            placeholder="e.g. 2026-04-24T12:30:00 or 2026-04-24"
+            className={`font-mono text-sm bg-card border-border ${stringError ? "border-destructive" : ""}`}
+          />
+          {stringError && (
+            <span className="text-xs text-destructive">{stringError}</span>
+          )}
         </div>
         <div className="flex gap-2 flex-wrap">
           {FIELD_ORDER.map((key) => (
